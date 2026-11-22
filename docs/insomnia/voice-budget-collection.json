@@ -1,0 +1,131 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-11-22T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v13.3.1",
+  "resources": [
+    {
+      "_id": "wrk_voice_budget",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Voice Budget API",
+      "description": "Coleção de testes da API de orçamento por voz (Spring AI + Groq).",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_voice_budget_base",
+      "_type": "environment",
+      "parentId": "wrk_voice_budget",
+      "name": "Base Environment",
+      "data": { "baseUrl": "http://localhost:8080" }
+    },
+    {
+      "_id": "fld_ia",
+      "_type": "request_group",
+      "parentId": "wrk_voice_budget",
+      "name": "1. IA (voz e texto)",
+      "metaSortKey": -300
+    },
+    {
+      "_id": "fld_rest",
+      "_type": "request_group",
+      "parentId": "wrk_voice_budget",
+      "name": "2. REST (sem IA)",
+      "metaSortKey": -200
+    },
+    {
+      "_id": "req_voice_gasto",
+      "_type": "request",
+      "parentId": "fld_ia",
+      "name": "Voz - registrar gasto (áudio)",
+      "metaSortKey": -100,
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/transactions/voice",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          { "name": "audio", "type": "file", "fileName": "docs/audios/01-gasto-pizza.wav" }
+        ]
+      },
+      "headers": [{ "name": "Content-Type", "value": "multipart/form-data" }]
+    },
+    {
+      "_id": "req_voice_consulta",
+      "_type": "request",
+      "parentId": "fld_ia",
+      "name": "Voz - consultar gastos (áudio)",
+      "metaSortKey": -90,
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/transactions/voice",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          { "name": "audio", "type": "file", "fileName": "docs/audios/03-consulta-alimentacao.wav" }
+        ]
+      },
+      "headers": [{ "name": "Content-Type", "value": "multipart/form-data" }]
+    },
+    {
+      "_id": "req_ai_gasto",
+      "_type": "request",
+      "parentId": "fld_ia",
+      "name": "Texto - registrar gasto",
+      "metaSortKey": -80,
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/transactions/ai",
+      "body": { "mimeType": "text/plain", "text": "gastei 25 reais de uber hoje" },
+      "headers": [{ "name": "Content-Type", "value": "text/plain" }]
+    },
+    {
+      "_id": "req_ai_consulta",
+      "_type": "request",
+      "parentId": "fld_ia",
+      "name": "Texto - consultar gastos",
+      "metaSortKey": -70,
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/transactions/ai",
+      "body": { "mimeType": "text/plain", "text": "quanto gastei com transporte?" },
+      "headers": [{ "name": "Content-Type", "value": "text/plain" }]
+    },
+    {
+      "_id": "req_rest_criar",
+      "_type": "request",
+      "parentId": "fld_rest",
+      "name": "Criar transação",
+      "metaSortKey": -60,
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/transactions",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Curso de inglês\",\n  \"amount\": 150.00,\n  \"category\": \"EDUCACAO\",\n  \"date\": \"2026-11-21\"\n}"
+      },
+      "headers": [{ "name": "Content-Type", "value": "application/json" }]
+    },
+    {
+      "_id": "req_rest_invalida",
+      "_type": "request",
+      "parentId": "fld_rest",
+      "name": "Criar transação inválida (400)",
+      "metaSortKey": -50,
+      "method": "POST",
+      "url": "{{ _.baseUrl }}/transactions",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"description\": \"Teste\",\n  \"amount\": -5,\n  \"category\": \"OUTROS\",\n  \"date\": \"2026-11-21\"\n}"
+      },
+      "headers": [{ "name": "Content-Type", "value": "application/json" }]
+    },
+    {
+      "_id": "req_rest_listar",
+      "_type": "request",
+      "parentId": "fld_rest",
+      "name": "Listar por categoria",
+      "metaSortKey": -40,
+      "method": "GET",
+      "url": "{{ _.baseUrl }}/transactions",
+      "parameters": [{ "name": "category", "value": "ALIMENTACAO" }],
+      "body": {},
+      "headers": []
+    }
+  ]
+}
